@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Data Types</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+        
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .title {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+        }
+        
+        .title h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradient 3s ease-in-out infinite;
+            margin-bottom: 10px;
+        }
+        
+        @keyframes gradient {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .subtitle {
+            color: #666;
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+        
+        .data-types-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .type-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .type-header {
+            padding: 16px 20px;
+            border-radius: 16px;
+            font-weight: 700;
+            text-align: center;
+            font-size: 1.1rem;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transform: translateY(0);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .type-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+        
+        .type-header:hover::before {
+            left: 100%;
+        }
+        
+        .type-header:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+        
+        .numbers { background: linear-gradient(135deg, #00b4db, #0083b0); }
+        .bool { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .sequence { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .mapping { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .sets { background: linear-gradient(135deg, #fa709a, #fee140); }
+        
+        .type-item {
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 12px;
+            text-align: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 600;
+            color: #333;
+            border: 2px solid transparent;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            backdrop-filter: blur(10px);
+        }
+        
+        .type-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+            background: white;
+        }
+        
+        .type-item:active {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .example-display {
+            margin-top: 30px;
+            padding: 25px;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            border-radius: 16px;
+            color: #ecf0f1;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .example-display::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 100%;
+            animation: gradient-slide 2s ease-in-out infinite;
+        }
+        
+        @keyframes gradient-slide {
+            0%, 100% { background-position: 0% 0%; }
+            50% { background-position: 100% 0%; }
+        }
+        
+        .example-title {
+            color: #3498db;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        
+        .example-code {
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+        
+        .highlight {
+            color: #e74c3c;
+            font-weight: 700;
+        }
+        
+        .keyword {
+            color: #f39c12;
+        }
+        
+        .string {
+            color: #2ecc71;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .data-types-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .title h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .data-types-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .floating-icons {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .floating-icon {
+            position: absolute;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="floating-icons">
+            <div class="floating-icon" style="top: 10%; left: 10%; animation-delay: 0s;">🐍</div>
+            <div class="floating-icon" style="top: 20%; right: 15%; animation-delay: 1s;">💻</div>
+            <div class="floating-icon" style="bottom: 25%; left: 15%; animation-delay: 2s;">📊</div>
+            <div class="floating-icon" style="bottom: 15%; right: 20%; animation-delay: 3s;">⚡</div>
+        </div>
+        
+        <div class="title">
+            <h1>Python Data Types</h1>
+            <p class="subtitle">Interactive learning guide • Click on any type to see examples!</p>
+        </div>
+        
+        <div class="data-types-grid">
+            <div class="type-column">
+                <div class="type-header numbers" onclick="showExample('numbers')">Numbers</div>
+                <div class="type-item" onclick="showExample('int')">int</div>
+                <div class="type-item" onclick="showExample('float')">float</div>
+                <div class="type-item" onclick="showExample('complex')">complex</div>
+            </div>
+            
+            <div class="type-column">
+                <div class="type-header bool" onclick="showExample('bool')">Boolean</div>
+                <div class="type-item" onclick="showExample('true')">True</div>
+                <div class="type-item" onclick="showExample('false')">False</div>
+                <div style="height: 48px;"></div>
+            </div>
+            
+            <div class="type-column">
+                <div class="type-header sequence" onclick="showExample('sequence')">Sequence</div>
+                <div class="type-item" onclick="showExample('string')">str</div>
+                <div class="type-item" onclick="showExample('list')">list</div>
+                <div class="type-item" onclick="showExample('tuple')">tuple</div>
+            </div>
+            
+            <div class="type-column">
+                <div class="type-header mapping" onclick="showExample('mapping')">Mapping</div>
+                <div class="type-item" onclick="showExample('dict')">dict</div>
+                <div style="height: 96px;"></div>
+            </div>
+            
+            <div class="type-column">
+                <div class="type-header sets" onclick="showExample('sets')">Sets</div>
+                <div class="type-item" onclick="showExample('set')">set</div>
+                <div style="height: 48px;"></div>
+            </div>
+        </div>
+        
+        <div class="example-display" id="exampleDisplay">
+            <div class="example-title">👆 Click on any data type above to see examples!</div>
+            <div class="example-code">
+                Welcome to Python Data Types! This interactive guide will help you understand each type with practical examples and code snippets.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const examples = {
+            numbers: {
+                title: "📊 Numbers - Numeric Data Types",
+                code: `# Python supports three numeric types:
+<span class="highlight">int</span>     - Whole numbers (unlimited precision)
+<span class="highlight">float</span>   - Decimal numbers (64-bit floating point)
+<span class="highlight">complex</span> - Numbers with real and imaginary parts
+
+# Examples of all three:
+age = <span class="highlight">25</span>           # int
+pi = <span class="highlight">3.14159</span>      # float  
+z = <span class="highlight">3 + 4j</span>        # complex`
+            },
+            int: {
+                title: "🔢 Integer (int) - Whole Numbers",
+                code: `# Integers in Python have unlimited precision
+small_num = <span class="highlight">42</span>
+large_num = <span class="highlight">123456789012345678901234567890</span>
+negative = <span class="highlight">-17</span>
+
+# Different number bases:
+binary = <span class="highlight">0b1010</span>    # Binary (10 in decimal)
+octal = <span class="highlight">0o755</span>      # Octal (493 in decimal)  
+hex_num = <span class="highlight">0xFF</span>     # Hexadecimal (255 in decimal)`
+            },
+            float: {
+                title: "🌊 Float - Decimal Numbers",
+                code: `# Floating-point numbers (64-bit precision)
+temperature = <span class="highlight">98.6</span>
+scientific = <span class="highlight">1.23e-4</span>    # Scientific notation
+infinity = <span class="highlight">float('inf')</span>
+not_a_number = <span class="highlight">float('nan')</span>
+
+# Common operations:
+result = <span class="highlight">3.14 * 2</span>    # 6.28
+rounded = <span class="highlight">round(3.14159, 2)</span>  # 3.14`
+            },
+            complex: {
+                title: "🎭 Complex - Real + Imaginary Numbers",
+                code: `# Complex numbers: real + imaginary parts
+z1 = <span class="highlight">3 + 4j</span>
+z2 = <span class="highlight">complex(5, -2)</span>  # 5 - 2j
+
+# Accessing parts:
+real_part = <span class="highlight">z1.real</span>     # 3.0
+imag_part = <span class="highlight">z1.imag</span>     # 4.0
+magnitude = <span class="highlight">abs(z1)</span>     # 5.0`
+            },
+            bool: {
+                title: "✅ Boolean - True or False Values",
+                code: `# Only two boolean values in Python
+is_student = <span class="highlight">True</span>
+is_weekend = <span class="highlight">False</span>
+
+# Boolean operations:
+result1 = <span class="highlight">True and False</span>   # False
+result2 = <span class="highlight">True or False</span>    # True
+result3 = <span class="highlight">not True</span>        # False
+
+# Truthiness in Python:
+<span class="highlight">bool(0)</span>      # False
+<span class="highlight">bool([])</span>     # False (empty list)
+<span class="highlight">bool("hi")</span>   # True (non-empty string)`
+            },
+            true: {
+                title: "✅ True - Boolean True Value",
+                code: `# True represents a boolean true value
+success = <span class="highlight">True</span>
+is_valid = <span class="highlight">True</span>
+
+# Comparisons that return True:
+<span class="highlight">5 > 3</span>           # True
+<span class="highlight">"a" in "cat"</span>    # True
+<span class="highlight">len([1,2,3]) == 3</span> # True
+
+# Converting to True:
+<span class="highlight">bool(1)</span>        # True
+<span class="highlight">bool("text")</span>   # True
+<span class="highlight">bool([1, 2])</span>   # True (non-empty list)`
+            },
+            false: {
+                title: "❌ False - Boolean False Value",
+                code: `# False represents a boolean false value
+failed = <span class="highlight">False</span>
+is_empty = <span class="highlight">False</span>
+
+# Comparisons that return False:
+<span class="highlight">5 < 3</span>           # False
+<span class="highlight">"x" in "cat"</span>    # False
+<span class="highlight">10 == 5</span>         # False
+
+# Values that convert to False:
+<span class="highlight">bool(0)</span>        # False
+<span class="highlight">bool("")</span>       # False (empty string)
+<span class="highlight">bool([])</span>       # False (empty list)`
+            },
+            sequence: {
+                title: "🔗 Sequences - Ordered Collections",
+                code: `# Sequences are ordered collections with indices
+<span class="highlight">str</span>   - Text strings (immutable)
+<span class="highlight">list</span>  - Ordered, mutable collections
+<span class="highlight">tuple</span> - Ordered, immutable collections
+
+# All support:
+sequence[<span class="highlight">index</span>]     # Access by index
+<span class="highlight">len(sequence)</span>        # Get length
+<span class="keyword">for</span> item <span class="keyword">in</span> sequence  # Iteration`
+            },
+            string: {
+                title: "📝 String (str) - Text Data",
+                code: `# Strings store text (immutable sequences)
+name = <span class="string">"Alice"</span>
+message = <span class="string">'Hello, World!'</span>
+multiline = <span class="string">"""This is a
+multi-line string"""</span>
+
+# String operations:
+length = <span class="highlight">len(name)</span>          # 5
+upper = <span class="highlight">name.upper()</span>        # "ALICE"
+first_char = <span class="highlight">name[0]</span>        # "A"
+substring = <span class="highlight">name[1:3]</span>       # "li"`
+            },
+            list: {
+                title: "📋 List - Mutable Ordered Collection",
+                code: `# Lists are ordered, mutable collections
+fruits = <span class="highlight">["apple", "banana", "orange"]</span>
+numbers = <span class="highlight">[1, 2, 3, 4, 5]</span>
+mixed = <span class="highlight">[1, "hello", 3.14, True]</span>
+
+# List operations:
+fruits.<span class="highlight">append("grape")</span>     # Add to end
+first_fruit = <span class="highlight">fruits[0]</span>    # "apple"
+fruits[<span class="highlight">1</span>] = <span class="string">"kiwi"</span>         # Modify element
+length = <span class="highlight">len(fruits)</span>       # Get length`
+            },
+            tuple: {
+                title: "📦 Tuple - Immutable Ordered Collection",
+                code: `# Tuples are ordered, immutable collections
+coordinates = <span class="highlight">(10, 20)</span>
+rgb_color = <span class="highlight">(255, 128, 0)</span>
+single_item = <span class="highlight">("hello",)</span>  # Note the comma!
+
+# Tuple operations:
+x, y = <span class="highlight">coordinates</span>         # Unpacking
+first = <span class="highlight">rgb_color[0]</span>       # 255
+count = <span class="highlight">rgb_color.count(255)</span> # 1
+
+# Tuples are immutable:
+# coordinates[0] = 30  # ❌ This would cause an error`
+            },
+            mapping: {
+                title: "🗺️ Mapping - Key-Value Collections",
+                code: `# Mappings associate keys with values
+<span class="highlight">dict</span> - The primary mapping type in Python
+
+# Key features:
+• Keys must be unique and immutable
+• Values can be any type
+• Unordered (Python 3.7+ maintains insertion order)
+• Mutable - can add, remove, modify
+
+# Common use cases:
+• Configuration settings
+• Database records
+• Caching/lookup tables`
+            },
+            dict: {
+                title: "📚 Dictionary (dict) - Key-Value Pairs",
+                code: `# Dictionaries map keys to values
+person = <span class="highlight">{
+    "name": "Alice",
+    "age": 30,
+    "city": "New York"
+}</span>
+
+# Dictionary operations:
+name = <span class="highlight">person["name"]</span>           # "Alice"
+person[<span class="string">"age"</span>] = <span class="highlight">31</span>              # Update value
+person[<span class="string">"email"</span>] = <span class="string">"alice@email.com"</span> # Add new key
+
+# Safe access:
+age = <span class="highlight">person.get("age", 0)</span>      # Get with default`
+            },
+            sets: {
+                title: "🔘 Sets - Unique Collections",
+                code: `# Sets store unique elements (no duplicates)
+<span class="highlight">set</span>       - Mutable set of unique items
+
+
+# Key features:
+• No duplicate elements
+• Unordered collections
+• Support mathematical set operations
+• Fast membership testing
+
+# Set operations: union, intersection, difference`
+            },
+            set: {
+                title: "🎯 Set - Mutable Unique Collection",
+                code: `# Sets contain unique elements only
+colors = <span class="highlight">{"red", "green", "blue"}</span>
+numbers = <span class="highlight">set([1, 2, 3, 2, 1])</span>  # {1, 2, 3}
+empty_set = <span class="highlight">set()</span>  # Empty set (not {})
+
+# Set operations:
+colors.<span class="highlight">add("yellow")</span>        # Add element
+colors.<span class="highlight">remove("red")</span>       # Remove element
+is_member = <span class="string">"blue"</span> <span class="keyword">in</span> colors  # True
+
+# Mathematical operations:
+set1 = <span class="highlight">{1, 2, 3}</span>
+set2 = <span class="highlight">{3, 4, 5}</span>
+union = <span class="highlight">set1 | set2</span>          # {1, 2, 3, 4, 5}`
+            },
+            frozenset: {
+                title: "❄️ Frozenset - Immutable Unique Collection",
+                code: `# Frozensets are immutable sets
+vowels = <span class="highlight">frozenset(['a', 'e', 'i', 'o', 'u'])</span>
+primes = <span class="highlight">frozenset({2, 3, 5, 7, 11})</span>
+
+# Same operations as sets, but immutable:
+is_vowel = <span class="string">'a'</span> <span class="keyword">in</span> vowels      # True
+count = <span class="highlight">len(primes)</span>           # 5
+
+# Can be dictionary keys (unlike regular sets):
+word_vowels = <span class="highlight">{
+    frozenset(['a', 'e']): "words with a, e",
+    frozenset(['i', 'o']): "words with i, o"
+}</span>
+
+# frozensets are hashable and immutable`
+            }
+        };
+
+        function showExample(type) {
+            const example = examples[type];
+            if (!example) return;
+            
+            const display = document.getElementById('exampleDisplay');
+            display.innerHTML = `
+                <div class="example-title">${example.title}</div>
+                <div class="example-code">${example.code}</div>
+            `;
+            display.classList.remove('fade-in');
+            void display.offsetWidth; // Force reflow
+            display.classList.add('fade-in');
+        }
+
+        // Add click sound effect (optional)
+        document.querySelectorAll('.type-item, .type-header').forEach(item => {
+            item.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = '';
+                }, 100);
+            });
+        });
+
+        // Initialize with a welcome message
+        document.addEventListener('DOMContentLoaded', function() {
+            showExample('numbers');
+        });
+    </script>
+</body>
+</html>
